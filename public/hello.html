@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html>
+<meta charset="utf-8">
+<head>
+<title> testing pixi</title>
+<script src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
+<script src="pixi.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+</head>
+<body>
+
+
+<script>
+// imports
+
+/*var server = 'ws://localhost:8081/';
+var socket = io(server);
+
+socket.on('connection',function(){
+	socket.emit('hi!');
+	});*/
+	
+	
+	
+// sets up a canvas, using auto detect to see ifi ts canvas or webgl
+
+
+
+var renderer =  new PIXI.autoDetectRenderer(500,500);
+
+document.body.appendChild(renderer.view);
+var stage = new PIXI.Container();
+stage.alpha = 1;
+var d=10;
+
+// adds the renderer object to HTML DOM
+
+
+
+//renderer.autoResize = true;
+//renderer.resize(window.innerWidth, window.innerHeight);
+
+
+// PIXI uses a cache to store images, which is then converted to webGl format
+
+
+PIXI.loader
+.add("/images/cat.png")
+.load(setup);
+
+
+
+function setup(){
+
+	var cat1 = new PIXI.Sprite(PIXI.loader.resources["/images/cat.png"].texture);
+var cat2 = new PIXI.Sprite(PIXI.loader.resources["/images/cat.png"].texture);
+stage.addChild(cat1);
+
+
+stage.addChild(cat2);
+cat2.position.y=202;
+renderer.render(stage);
+
+}
+
+function update(){
+	var cat1 = new PIXI.Sprite(PIXI.loader.resources["/images/cat.png"].texture);
+	cat1.position.x=cat1.position.x+10;
+	stage.addChild(cat1);
+	//cat1.position.y=cat1.position.x+10;
+	renderer.render(stage);
+
+
+}
+
+renderer.render(stage);
+update();
+
+function sendData(){
+
+
+document.getElementById("user").submit();
+//$.post("http://localhost:3000",{type: "1"},function(data){
+
+	//console.log(data)
+   // update();
+    //renderer.render(stage);
+    //console.log(d*data);
+//});
+}
+//update();
+
+</script>
+<form id="user"  method ="post" action="http://localhost:9000/">
+	Username: <input type="text" name="fname"><br>
+	
+	<input type ="button" onclick="sendData()" value= "Submit">
+	</form>
+</body>
+</html>

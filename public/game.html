@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html>
+<meta charset="utf-8">
+<head>
+<title> testing pixi</title>
+<script src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
+<script src="pixi.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+</head>
+<body>
+
+<p id="status"> WAiting for other players</p>
+<p id="p1"> </p>
+<p id="p2"> </p>
+<p id="p3"> </p>
+<p id="p4"> </p>
+
+<script>
+
+var socket= io.connect('http://localhost:3000/');
+var full=false;
+var PlayerHand;
+var username;
+var roomid;
+
+function updateStatus(users){
+		var count =1;
+		if(users.length==4){
+
+			document.getElementById("status").innerHTML="Game Starting";	
+			document.getElementById("p1").innerHTML="Player "+users[0].username +" has connected";
+			document.getElementById("p2").innerHTML="Player "+users[1].username +" has connected";
+			document.getElementById("p3").innerHTML="Player "+users[2].username +" has connected";
+			document.getElementById("p4").innerHTML="Player "+users[3].username +" has connected";
+			
+
+
+
+			full=true;
+		}
+		}
+
+
+
+
+
+function startTimer(){
+ 
+ socket.on('playerlist',function(users){
+		console.log(users);
+		updateStatus(users);
+	});
+
+}
+	
+startTimer();
+socket.on('updateList',function (users){
+	var identifier = document.cookie.split(';');
+	 username = identifier[0].split('=')[1];
+	 roomid = identifier[1].split('=')[1];
+
+	 if (roomid!=users[0].roomid){
+	 	return;
+	 	console.log('different room ');
+	 }
+	 else{updateStatus(users); console.log('same room');}
+
+
+
+	
+	//console.log(identifier.split('='));
+
+	//console.log(document.cookie);
+	
+
+});
+
+socket.on('startGame',function(newgame){
+	console.log(newgame);
+	console.log(document.cookie);
+	console.log(username);
+	for (var i = 0 ; i <newgame.length;i++){
+		console.log(newgame[i].username);
+		if(newgame[i].username==username){
+
+			PlayerHand=newgame[i].Hand;
+			console.log(PlayerHand);
+
+		}
+
+
+
+	}
+
+
+
+
+
+
+})
+//get game state and username 
+
+
+</script>
+
+</body>
+</html>
