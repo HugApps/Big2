@@ -34,13 +34,24 @@ var users=[];
 var roomcount=1;
 
 io.on('connection', function(socket){
+     
 
 
+
+   
 
 	socket.emit('playerlist',users);
 	 var cookie = socket.request.headers.cookie.username;
 
-	 console.log(socket.id);
+
+	 socket.on('startgame',function(full){
+	 	//console.log(full);
+	 	 var tempDeck = new Deck();
+        tempDeck.shuffle();
+	 	socket.emit('startgame',DealCards(users,tempDeck));
+
+	 })
+	 
 
 
 })
@@ -64,6 +75,7 @@ app.get('/', function ( req, res){
 
 app.post('/', function(req, res){
  
+    //Home sends post request to server when joning server
 
     // testing with 2 users only
     if(users.length <2  && req.body.fname){
@@ -79,9 +91,10 @@ app.post('/', function(req, res){
 		res.cookie("username",client.username);
 		res.cookie("roomid",client.roomid);
 		//res.cookie=null;
-		io.emit('updateList',users);
-		res.sendFile(path.join(__dirname + '/public/game.html'));
+
 		
+		res.sendFile(path.join(__dirname + '/public/game.html'));
+		io.sockets.emit('updateList',users);
 		//res.send('waiting for more players');
 		//console.log(users);
 
@@ -90,12 +103,12 @@ app.post('/', function(req, res){
 
 	else if (users.length==2){
 		
-        var tempDeck = new Deck();
-        tempDeck.shuffle();
+       // var tempDeck = new Deck();
+       // tempDeck.shuffle();
        // DealCards(users,tempDeck);
         roomcount++;
         // send the updated list of players with hands to game
-         io.emit('startGame',DealCards(users,tempDeck));
+        // io.emit('startGame',DealCards(users,tempDeck));
          //users=[];
 
 		//res.sendFile(path.join(__dirname + '/public/game.html'));
@@ -281,7 +294,7 @@ function DealCards(playerlist,Deck){
 			
 
 
-		console.log(tmpuser);
+		//console.log(tmpuser);
 		updatedlist.push(tmpuser);
 
 
