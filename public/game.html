@@ -24,15 +24,33 @@ var PlayerHand;
 var username;
 var roomid;
 
+// Display users that join the server
 function updateStatus(users){
+
 		var count =1;
-		if(users.length==4){
+        for(var i=0;i<users.length;i++){
+        	if(users[i]!=null){
+        		//console.log(i);
+        		var pid ="p"+(i+1);
+        		document.getElementById(pid).innerHTML="Player "+ users[i].username +" has connected";
+
+
+        	}
+        }
+
+        
+		
+	//	document.getElementById("p2").innerHTML="Player "+users[1].username +" has connected";
+		if(users.length==2){
 
 			document.getElementById("status").innerHTML="Game Starting";	
-			document.getElementById("p1").innerHTML="Player "+users[0].username +" has connected";
-			document.getElementById("p2").innerHTML="Player "+users[1].username +" has connected";
-			document.getElementById("p3").innerHTML="Player "+users[2].username +" has connected";
-			document.getElementById("p4").innerHTML="Player "+users[3].username +" has connected";
+
+
+			socket.emit('startgame',full);
+			//document.getElementById("p1").innerHTML="Player "+users[0].username +" has connected";
+			//document.getElementById("p2").innerHTML="Player "+users[1].username +" has connected";
+			//document.getElementById("p3").innerHTML="Player "+users[2].username +" has connected";
+			//document.getElementById("p4").innerHTML="Player "+users[3].username +" has connected";
 			
 
 
@@ -44,22 +62,23 @@ function updateStatus(users){
 
 
 
-
-function startTimer(){
- 
+// Poll for users joining the game
+ // Intial user list
  socket.on('playerlist',function(users){
-		console.log(users);
+		//console.log(users);
 		updateStatus(users);
 	});
 
-}
+
 	
-startTimer();
+
 socket.on('updateList',function (users){
+	console.log("i got everything");
 	var identifier = document.cookie.split(';');
 	 username = identifier[0].split('=')[1];
 	 roomid = identifier[1].split('=')[1];
-
+     console.log(roomid);
+     console.log(username);
 	 if (roomid!=users[0].roomid){
 	 	return;
 	 	console.log('different room ');
@@ -69,21 +88,21 @@ socket.on('updateList',function (users){
 
 
 	
-	//console.log(identifier.split('='));
-
-	//console.log(document.cookie);
+	
 	
 
 });
 
-socket.on('startGame',function(newgame){
-	console.log(newgame);
-	console.log(document.cookie);
-	console.log(username);
+// once game is full, get hands from server
+
+
+socket.on('startgame',function(newgame){
+	console.log("Got here");
 	for (var i = 0 ; i <newgame.length;i++){
 		console.log(newgame[i].username);
 		if(newgame[i].username==username){
-
+			console.log(newgame[i].username);
+			console.log("Got hand");
 			PlayerHand=newgame[i].Hand;
 			console.log(PlayerHand);
 
@@ -99,7 +118,7 @@ socket.on('startGame',function(newgame){
 
 
 })
-//get game state and username 
+
 
 
 </script>
