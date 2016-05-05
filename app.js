@@ -31,30 +31,54 @@ app.use(bodyParser.json());
 
 
 var users=[];
+var sockets=[];
 var roomcount=1;
+var clientcount=0;
+var Deck  = new Deck();
+Deck.shuffle();
+
 
 io.on('connection', function(socket){
-     
-
-
+     // player list shuld be shared with all users..
+     clientcount++;
+     console.log(socket.id);
+     sockets.push(socket.id);
+     console.log("The NUMBER OF IDS is : " + sockets.length);
 
    
 
-	socket.emit('playerlist',users);
-	 var cookie = socket.request.headers.cookie.username;
+	//socket.emit('playerlist',users);
+	// var cookie = socket.request.headers.cookie.username;
+    socket.emit('updateList',users);
+	socket.broadcast.emit('playerlist',users);
+	
+		console.log("BUILDING NEW DECK");
+		console.log(users[users.length-1]);
+		console.log(socket.id);
+		io.to(socket.id).emit('startgame',DealCards(users[users.length-1],Deck));
+	
+	
+     
+  
 
+  	
+	
+             
+              
+       
+        // users=[];
 
-	 socket.on('startgame',function(full){
-	 	//console.log(full);
-	 	 var tempDeck = new Deck();
-        tempDeck.shuffle();
-	 	socket.emit('startgame',DealCards(users,tempDeck));
+		//res.sendFile(path.join(__dirname + '/public/game.html'));
 
-	 })
+		
+		 	//console.log(full);
+	 	 
+
+	
 	 
 
 
-})
+});
 
 
 
@@ -69,7 +93,7 @@ app.get('/', function ( req, res){
     }else{
 	res.sendFile(path.join(__dirname + '/public/hello.html'));}
 	
-})
+});
 
 
 
@@ -78,13 +102,14 @@ app.post('/', function(req, res){
     //Home sends post request to server when joning server
 
     // testing with 2 users only
-    if(users.length <2  && req.body.fname){
+   
 
          var client = {
     		username: req.body.fname ,
     		ip: req.ip,
     		roomid: roomcount,
-    		Hand: []
+    		Hand: [],
+    		first: false
          }
 		users.push(client);
 
@@ -94,28 +119,17 @@ app.post('/', function(req, res){
 
 		
 		res.sendFile(path.join(__dirname + '/public/game.html'));
-		io.sockets.emit('updateList',users);
+		//io.sockets.emit('updateList',users);
+		//io.sockets.emit('updateList',users);
 		//res.send('waiting for more players');
 		//console.log(users);
 
 
-	}
+	
 
-	else if (users.length==2){
-		
-       // var tempDeck = new Deck();
-       // tempDeck.shuffle();
-       // DealCards(users,tempDeck);
-        roomcount++;
-        // send the updated list of players with hands to game
-        // io.emit('startGame',DealCards(users,tempDeck));
-         //users=[];
 
-		//res.sendFile(path.join(__dirname + '/public/game.html'));
-	} else{
-		res.send('game full');
-		users=[];
-	}
+	
+
 	//res.send(' ' + username);
     //console.log(req.body.form);
    // console.log(req.body.fname);
@@ -171,7 +185,7 @@ function Card( suit, value ){
 			this.rank=0;
 			break;
 		case 'c':
-			this.rank-1;
+			this.rank=1;
 			break;
 		case 'h':
 			this.rank=2;
@@ -273,29 +287,32 @@ this.Draw = function(){
 
 }
 
-function DealCards(playerlist,Deck){
+function DealCards(user,Deck){
+		console.log(user);
 	// for each player in the room, give him cards from the deck and add it to the listof players
-	var updatedlist = [];
-	var tmpuser;
-	for(var i = 0; i <playerlist.length; i ++){
-		tmpuser = playerlist[i];
-
-
 		for(var x =0; x<13;x++){
-			tmpuser.Hand.push(Deck.Draw());
+			var drew = Deck.Draw();
+			if(drew.value==3 && drew.rank==0){
+				user.first=true;
+
+
+
+			}
+			user.Hand.push(drew);
+
 
 
 
 
 		}
 
-
+		console.log(user);
 
 			
 
 
 		//console.log(tmpuser);
-		updatedlist.push(tmpuser);
+		//updatedlist.push(tmpuser);
 
 
 
@@ -304,10 +321,9 @@ function DealCards(playerlist,Deck){
 
 
 
-	}
+	
 
-	return updatedlist;
-
+	return user;
 
 
 

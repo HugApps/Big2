@@ -12,9 +12,13 @@
 
 <p id="status"> WAiting for other players</p>
 <p id="p1"> </p>
+<p id="p1Hand"</p>
 <p id="p2"> </p>
+<p id="p3Hand"</p>
 <p id="p3"> </p>
+<p id="p4Hand"</p>
 <p id="p4"> </p>
+<p id="p4Hand"</p>
 
 <script>
 
@@ -26,9 +30,10 @@ var roomid;
 
 // Display users that join the server
 function updateStatus(users){
-
+         
 		var count =1;
-        for(var i=0;i<users.length;i++){
+
+        for(var i=0;i<users.length;i++){		
         	if(users[i]!=null){
         		//console.log(i);
         		var pid ="p"+(i+1);
@@ -46,7 +51,7 @@ function updateStatus(users){
 			document.getElementById("status").innerHTML="Game Starting";	
 
 
-			socket.emit('startgame',full);
+			//socket.emit('startgame',full);
 			//document.getElementById("p1").innerHTML="Player "+users[0].username +" has connected";
 			//document.getElementById("p2").innerHTML="Player "+users[1].username +" has connected";
 			//document.getElementById("p3").innerHTML="Player "+users[2].username +" has connected";
@@ -66,6 +71,7 @@ function updateStatus(users){
  // Intial user list
  socket.on('playerlist',function(users){
 		//console.log(users);
+		console.log(users);
 		updateStatus(users);
 	});
 
@@ -73,12 +79,14 @@ function updateStatus(users){
 	
 
 socket.on('updateList',function (users){
+	//console.log(users);
 	console.log("i got everything");
 	var identifier = document.cookie.split(';');
 	 username = identifier[0].split('=')[1];
 	 roomid = identifier[1].split('=')[1];
-     console.log(roomid);
-     console.log(username);
+     //console.log(roomid);
+     //console.log(username);
+     //console.log(users);
 	 if (roomid!=users[0].roomid){
 	 	return;
 	 	console.log('different room ');
@@ -98,26 +106,17 @@ socket.on('updateList',function (users){
 
 socket.on('startgame',function(newgame){
 	console.log("Got here");
-	for (var i = 0 ; i <newgame.length;i++){
-		console.log(newgame[i].username);
-		if(newgame[i].username==username){
-			console.log(newgame[i].username);
-			console.log("Got hand");
-			PlayerHand=newgame[i].Hand;
-			console.log(PlayerHand);
+	console.log(newgame);
+    console.log(newgame.Hand);
 
-		}
-
-
-
-	}
+	
 
 
 
 
 
 
-})
+});
 
 
 
