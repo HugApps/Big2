@@ -56,6 +56,9 @@ io.on('connection', function(socket){
 		console.log(users[users.length-1]);
 		console.log(socket.id);
 		io.to(socket.id).emit('startgame',DealCards(users[users.length-1],Deck));
+        
+		
+
 	
 	
      
@@ -109,7 +112,7 @@ app.post('/', function(req, res){
     		ip: req.ip,
     		roomid: roomcount,
     		Hand: [],
-    		first: false
+    		turn: false
          }
 		users.push(client);
 
@@ -182,22 +185,22 @@ function Card( suit, value ){
 	switch(this.suit){
 
 		case 'd':
-			this.rank=0;
-			break;
-		case 'c':
 			this.rank=1;
 			break;
-		case 'h':
+		case 'c':
 			this.rank=2;
 			break;
-		case 's':
+		case 'h':
 			this.rank=3;
+			break;
+		case 's':
+			this.rank=4;
 			break;
 		
 
 	}
     
-	function Compare (CardA , CardB){
+	/*function Compare (CardA , CardB){
 
 		if(CardA.value > CardB.value){
 			return true;
@@ -218,7 +221,7 @@ function Card( suit, value ){
 
 
 
-	}
+	}*/
 
 }
 
@@ -293,7 +296,7 @@ function DealCards(user,Deck){
 		for(var x =0; x<13;x++){
 			var drew = Deck.Draw();
 			if(drew.value==3 && drew.rank==0){
-				user.first=true;
+				user.turn=true;
 
 
 
