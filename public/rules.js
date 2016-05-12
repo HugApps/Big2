@@ -31,8 +31,8 @@
             }*/
             function Combo(cardslist){
                
-                this.cards=cardslist.sort(this.compare);
-                 console.log(this.cards);
+                this.cards=cardslist;
+                
                 this.kicker; //distinguish winner when combos have same value;
                 this.value=0;
                 this.level=0;
@@ -307,7 +307,7 @@
                         if( A.rank > B.rank){console.log(A.name);return 1;}
                         
                         else{
-                            console.log(.name);
+                            console.log(name);
                             return -1;
                         }
                         

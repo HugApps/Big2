@@ -48,7 +48,7 @@ function updateStatus(users){
         
 		
 	//	document.getElementById("p2").innerHTML="Player "+users[1].username +" has connected";
-		if(users.length==2){
+		if(users.length==4){
 
 			document.getElementById("status").innerHTML="Game Starting";	
 
@@ -108,13 +108,15 @@ socket.on('updateList',function (users){
 
 socket.on('startgame',function(newgame){
 	console.log("Got here");
-	console.log(newgame);
-    console.log(newgame.Hand);
+	//console.log(newgame);
+   // console.log(newgame.Hand);
     PlayerHand=newgame.Hand;  
-    compare(PlayerHand[0],PlayerHand[1]);
+    //compare(PlayerHand[0],PlayerHand[1]);
    // console.log(PlayerHand);
-   // var cear = new Combo(PlayerHand);
-  //  console.log(cear);
+   PlayerHand=sortie(PlayerHand);
+   console.log(PlayerHand);
+   var cear = new Combo(PlayerHand);
+    console.log(cear);
     if(newgame.turn==true){
     	console.log("My turn");
 
@@ -127,13 +129,83 @@ socket.on('startgame',function(newgame){
 
 
 
-
 });
 
 
 
 
+    function sortie(A){
+              var tits =[];
+             //console.log(A);
+        var val=A[0];
+        var index=0;
+ 	if(A.length==2){
+            if(A[0].value <A[1].value){return A;}
+            else{ var t = A[0]; A[0]=A[1]; A[1]=t; return A;}
+            
+            
+            
+        }
 
+ 	else{
+            
+            
+            
+            
+            for(var i =1; i<=A.length-1;i++){
+                if(A[i].value <val.value){
+                    val=A[i];
+                    index=i;
+                
+                
+            }  else if(A[i].value==val.value){
+                
+                    if(A[i].rank<val.rank){
+                        val=A[i];
+                        index=i;
+                    }
+                
+                
+                
+                
+                
+            }
+        }    
+            var tmp = A[0];
+            A[0]=val;
+            A[index]=tmp;     
+            
+           
+            tits.push(val);
+            
+            return tits.concat(sortie(A.slice(1,A.length)));
+            
+            
+ 				
+
+
+
+
+
+
+
+
+
+
+ 		
+                
+
+
+
+
+
+ 	}
+ 	
+
+
+ 	
+                   
+                }
 
 
 </script>
