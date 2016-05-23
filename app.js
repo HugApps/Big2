@@ -290,7 +290,7 @@ this.Draw = function(){
 
 }
 
-function DealCards(user,Deck){
+ function DealCards(user,Deck){
 		console.log(user);
 	// for each player in the room, give him cards from the deck and add it to the listof players
 		for(var x =0; x<13;x++){

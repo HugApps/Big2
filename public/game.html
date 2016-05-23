@@ -23,12 +23,36 @@
 
 <script>
 
+
+
+
+
+
+// Connection variables and global variables
 var socket= io.connect('http://localhost:3000/');
 var full=false;
 var PlayerHand;
 var username;
 var roomid;
 var currturn;
+
+
+
+// Pixie JS 
+var renderer =  new PIXI.autoDetectRenderer(500,500);
+var texture;
+var loader = PIXI.loader;
+// ATTACH canvas to DOM
+document.body.appendChild(renderer.view);
+var stage = new PIXI.Container();
+stage.alpha = 1;
+
+
+
+
+  	
+  
+
 
 // Display users that join the server
 function updateStatus(users){
@@ -48,19 +72,20 @@ function updateStatus(users){
         
 		
 	//	document.getElementById("p2").innerHTML="Player "+users[1].username +" has connected";
-		if(users.length==4){
+		if(users.length==1){
 
-			document.getElementById("status").innerHTML="Game Starting";	
-
-
-			//socket.emit('startgame',full);
-			//document.getElementById("p1").innerHTML="Player "+users[0].username +" has connected";
-			//document.getElementById("p2").innerHTML="Player "+users[1].username +" has connected";
-			//document.getElementById("p3").innerHTML="Player "+users[2].username +" has connected";
-			//document.getElementById("p4").innerHTML="Player "+users[3].username +" has connected";
+			document.getElementById("status").innerHTML="Game Starting";
+			// Load playing Card sprite sheet + other sprites
+		
+			
 			
 
 
+			
+
+			
+			//PIXI.loader.load(setup);
+			// Add as needed
 
 			full=true;
 		}
@@ -71,6 +96,7 @@ function updateStatus(users){
 
 // Poll for users joining the game
  // Intial user list
+
  socket.on('playerlist',function(users){
 		//console.log(users);
 		console.log(users);
@@ -115,8 +141,16 @@ socket.on('startgame',function(newgame){
    // console.log(PlayerHand);
    PlayerHand=sortie(PlayerHand);
    console.log(PlayerHand);
-   var cear = new Combo(PlayerHand);
-    console.log(cear);
+
+   
+   
+  // var cear = new Combo(PlayerHand);
+    //console.log(cear);
+   //loadCards(PlayerHand);
+
+    // Render Hand Graphics
+
+    
     if(newgame.turn==true){
     	console.log("My turn");
 
@@ -124,14 +158,12 @@ socket.on('startgame',function(newgame){
 
     }
 	
-
+    setup(); 
 
 
 
 
 });
-
-
 
 
     function sortie(A){
@@ -207,7 +239,161 @@ socket.on('startgame',function(newgame){
                    
                 }
 
+// PIXIE.JS STUFF
 
+
+
+// CAll pixie to load resource into cache, call function setup to intialize it 
+//PIXI.loader.add("/images/cat2.png").load(setup);
+// Function when loading image , should load cat
+function setup(){
+
+ loader.add("cardsheet","/images/cat.png");
+ loader.load();
+ loader.on('progress', function(loader, resource){ 
+  	        console.log("progress");
+  			console.log(loader.progress);
+  			//console.log(loader);
+
+  		});
+  loader.on('complete',CardsSetup(PlayerHand));
+
+
+
+//var cat2 = new PIXI.Sprite(PIXI.loader.resources["/images/cat.png"].texture);
+
+
+
+//stage.addChild(cat2);
+//cat2.position.y=202;
+renderer.render(stage);
+
+}
+
+function CardsSetup(Hand){
+
+
+        //var cat1 = new PIXI.Sprite(loader.resources["cats"].texture);
+        // console.log(cat1);
+        // console.log(cat1.texture);
+        //console.log(loader.resources.cardsheet);
+       
+		var image = new PIXI.Sprite(loader.resources.cardsheet.texture);
+		console.log(image);
+		console.log(image.texture);
+	 	image.x=100;
+	 	image.y=100;
+	 	//cat1.x=40;
+	 //	cat1.y=50;
+	    console.log(stage);
+	    console.log(stage.renderable);
+	 	stage.addChild(image);
+	 	console.log(stage.children);
+	 	//console.log(stage.childern);
+	 	//stage.addChild(cat1);
+	 	renderer.render(stage);
+
+// each card is 70 x 90 pix
+
+var SpadeX =0;
+var SpadeY=0;
+var HeartX =70;
+var HeartY=0;
+var CloverX =210;
+var CloverY=0;
+var DiaX =140;
+var DiaY=0;
+
+
+
+
+	 var locx;
+	 var locy;
+	 switch(Hand[0].rank){
+
+	 	case 1 :
+	 		locx=140;
+	 		break;
+	 	case 2:
+	 		locx=210;
+	 		break;
+	 	case 3:
+	 		locx=70;
+	 		break;
+	 	case 4:
+	 		locx=0;
+	 		break;
+	 	}
+
+	 	switch(Hand[0].value){
+
+
+	 		case 12 :
+	 			locy=0;
+	 			break;
+	 		case 13:
+	 			locy=190;
+	 			break;
+	 		case 11:
+	 			locy=180;
+	 			break;
+	 		case 90 :
+	 			locy=270;
+	 			break;
+	 		case 10:
+	 			locy=360;
+	 			break;
+	 		case 9 :
+	 			locy=450;
+	 			break;
+	 			
+	 		case 8:
+	 			locy=540;
+	 			break;
+	 		case 7 :
+	 			locy=630;
+	 			break;
+	 		case 6:
+	 			locy=720;
+	 			break;
+	 		case 5 :
+	 			locy=810;
+	 			break;
+	 		case 4 :
+	 			locy=900;
+	 			break;
+	 		case 3:
+	 			locy=990;
+	 			break;
+
+	 		case 100:
+	 			locy=1080;
+	 			break;
+
+
+
+
+
+
+
+
+
+
+	 	}
+       
+
+
+
+
+
+
+}
+
+
+
+
+
+renderer.render(stage);
 </script>
 
 </body>
