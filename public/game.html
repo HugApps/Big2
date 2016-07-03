@@ -265,7 +265,7 @@ console.log(deckContainer);
 //AnimationFrameDeckDeal=window.requestAnimationFrame(AnimateDeck(0));
 //window.requestAnimationFrame(AnimateDeck);
 
-CardsSetup(PlayerHand);
+//CardsSetup(PlayerHand);
 
 
 renderer.render(stage);
@@ -298,78 +298,104 @@ renderer.render(stage);
 
 }
 
+/*function tween (obj,x2,y2){
+
+	var xpos = obj.position.x;
+	var ypos = obj.position.y;
+	if(xpos==x2 && ypos==y2){
+		return false;
+
+
+	}
+	var xdist= x2-xpos;
+    var ydist= y2-ypos;
+
+
+    obj.y=obj.y+ydist;
+    obj.x=obj.x+xdist;
+
+
+
+}*/
+
+
+
 function AnimateDeck(cardCount){
 	var count = cardCount;
-	   console.log(count);
+	  // console.log(count);
   
 	if(count>12){
 		count=0;
-		 console.log(count);
-		renderer.render(stage);}
+		
+		renderer.render(stage);
+		CardsSetup(PlayerHand);
+		return window.cancelAnimationFrame(AnimationFrameDeckDeal);}
+  		 
+
   		 var card = this.deckContainer[count];
 	
-	      console.log(count);
+	    console.log(count%4);
 		switch(count%4){
 
 
 				case 0 :
 						
-						if(card.position.y<=100){
-								return window.cancelAnimationFrame(AnimationFrameDeckDeal);
-								
-							break;
+						if(card.x <= (card.width/2)){
+							count ++;
+							
+
+
+
 						}
 						else{
-							card.y-=100;
-								return window.cancelAnimationFrame(AnimationFrameDeckDeal);
-								
+							// Move to the left 
+							card.x=card.x-10;
 						
-							break;}
-						
+							
+
+
+
+						}
+						break;
 
 				case 1 :
-						if(card.position.y>=700){
-								return window.cancelAnimationFrame(AnimationFrameDeckDeal);
-								
-							break;
-						}else{
-						
-						card.y+=100;
-						break;
+						if (card.y <= card.height/2){
+							count++;
+
+
 						}
+						else{
+							card.y=card.y-10;
+
+						}
+						break;
 
 				case 2 :
-						if(card.position.x>=800){
-								return window.cancelAnimationFrame(AnimationFrameDeckDeal);
-							
-							break;
+						if(card.x >= 800){
+							count++;
 
 
 
 						}else{
-						card.x+=100;
-						break;			
-					}
+
+
+							card.x=card.x+10;
+						}
+						break;
 
 				case 3 :
-						
-						if(card.position.x<=100){
-								return window.cancelAnimationFrame(AnimationFrameDeckDeal);
-								
-							break;
+						if(card.y >= 600){
+							count++;
 						}else{
-						card.x-=100;
+							card.y=card.y+10;
+						}
 						break;
-					}
 	}
 	
-
-	
-    // directioion variable , 0 = north, 1 = east, 2, south, 3 north;
     renderer.render(stage);
-    count = count+1;
-  
-	window.requestAnimationFrame(function(){ AnimateDeck(count);});
+	window.requestAnimationFrame(function () { AnimateDeck(count);})
+    // directioion variable , 0 = north, 1 = east, 2, south, 3 north;
+   
 
 				 
 	
@@ -377,6 +403,11 @@ function AnimateDeck(cardCount){
 	
 		
 		 
+
+
+
+
+
 
 
 
