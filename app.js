@@ -32,49 +32,61 @@ app.use(bodyParser.json());
 
 var users=[];
 var sockets=[];
-var roomcount=1;
+var roomcount=0;
 var clientcount=0;
 var Deck  = new Deck();
 Deck.shuffle();
 
+var rooms=[];
+
+
+
+
+
+
+
+
+
+
+
+
+
+// IO Connections and Page Serivinfg
 
 io.on('connection', function(socket){
      // player list shuld be shared with all users..
      clientcount++;
-     console.log(socket.id);
+     //console.log(socket.id);
      sockets.push(socket.id);
      console.log("The NUMBER OF IDS is : " + sockets.length);
 
-   
-
+     
+        
 	//socket.emit('playerlist',users);
 	// var cookie = socket.request.headers.cookie.username;
     socket.emit('updateList',users);
 	socket.broadcast.emit('playerlist',users);
 	
-		console.log("BUILDING NEW DECK");
-		console.log(users[users.length-1]);
+		//console.log("BUILDING NEW DECK");
+		console.log(users.length);
 		console.log(socket.id);
-		io.to(socket.id).emit('startgame',DealCards(users[users.length-1],Deck));
+		if(users.length==2){
+			
+
+		//## HAS TO SEND TO ALL USERS IN A ROOM
+		for(i = 0 ; i <sockets.length;i++){
+			console.log(sockets[i]);
+			io.to(sockets[i]).emit('startgame',DealCards(users[i],Deck));
+		}
+		
+		}
         
 		
 
 	
 	
      
-  
-
-  	
-	
-             
-              
-       
-        // users=[];
-
-		//res.sendFile(path.join(__dirname + '/public/game.html'));
-
-		
-		 	//console.log(full);
+ 
 	 	 
 
 	

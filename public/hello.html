@@ -53,7 +53,7 @@ PIXI.loader
 
 function setup(){
 
-	var cat1 = new PIXI.Sprite(PIXI.loader.resources["/images/cat.png"].texture);
+var cat1 = new PIXI.Sprite(PIXI.loader.resources["/images/cat.png"].texture);
 var cat2 = new PIXI.Sprite(PIXI.loader.resources["/images/cat.png"].texture);
 stage.addChild(cat1);
 
@@ -68,6 +68,7 @@ function update(){
 	var cat1 = new PIXI.Sprite(PIXI.loader.resources["/images/cat.png"].texture);
 	cat1.position.x=cat1.position.x+10;
 	stage.addChild(cat1);
+	console.log(stage.children);
 	//cat1.position.y=cat1.position.x+10;
 	renderer.render(stage);
 

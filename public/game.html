@@ -35,11 +35,13 @@ var PlayerHand;
 var username;
 var roomid;
 var currturn;
-
+var HandImageList=[];
 
 
 // Pixie JS 
-var renderer =  new PIXI.autoDetectRenderer(500,500);
+var screenWidth=980;
+var screenHeight=980;
+var renderer =  new PIXI.autoDetectRenderer(screenWidth,screenHeight);
 var texture;
 var loader = PIXI.loader;
 // ATTACH canvas to DOM
@@ -47,10 +49,10 @@ document.body.appendChild(renderer.view);
 var stage = new PIXI.Container();
 stage.alpha = 1;
 
-
-
-
-  	
+var CardSheet = PIXI.BaseTexture.fromImage("/images/playingCards2.png");
+var deckContainer = [];
+var AnimationFrameDeckDeal;
+var backcard;  	
   
 
 
@@ -139,16 +141,13 @@ socket.on('startgame',function(newgame){
     PlayerHand=newgame.Hand;  
     //compare(PlayerHand[0],PlayerHand[1]);
    // console.log(PlayerHand);
+  
    PlayerHand=sortie(PlayerHand);
-   console.log(PlayerHand);
+   
 
    
    
-  // var cear = new Combo(PlayerHand);
-    //console.log(cear);
-   //loadCards(PlayerHand);
-
-    // Render Hand Graphics
+  
 
     
     if(newgame.turn==true){
@@ -248,53 +247,148 @@ socket.on('startgame',function(newgame){
 // Function when loading image , should load cat
 function setup(){
 
- loader.add("cardsheet","/images/cat.png");
- loader.load();
- loader.on('progress', function(loader, resource){ 
-  	        console.log("progress");
-  			console.log(loader.progress);
-  			//console.log(loader);
 
-  		});
-  loader.on('complete',CardsSetup(PlayerHand));
+// Setup Deck and Dealing Animation
 
 
+// Setups player's Hand images
+ 
+LoadDeckAnimation();
 
-//var cat2 = new PIXI.Sprite(PIXI.loader.resources["/images/cat.png"].texture);
+
+AnimationFrameDeckDeal=window.requestAnimationFrame(function() {AnimateDeck(0);});
 
 
 
-//stage.addChild(cat2);
-//cat2.position.y=202;
+
+console.log(deckContainer);
+//AnimationFrameDeckDeal=window.requestAnimationFrame(AnimateDeck(0));
+//window.requestAnimationFrame(AnimateDeck);
+
+CardsSetup(PlayerHand);
+
+
 renderer.render(stage);
+}
+
+
+function LoadDeckAnimation(){
+
+console.log("Loading Deck Animation");
+	
+
+for (x = 0 ; x <= 12 ;x++){
+	var temp =new PIXI.Sprite.fromImage('/images/cardBack_red4.png');
+
+    temp.position.y=400-x;
+    temp.position.x=490-x;
+    stage.addChild(temp);
+    deckContainer.push(temp);
+   
+}
+
+
+
+renderer.render(stage);
+
+
+
+
+
 
 }
 
+function AnimateDeck(cardCount){
+	var count = cardCount;
+	   console.log(count);
+  
+	if(count>12){
+		count=0;
+		 console.log(count);
+		renderer.render(stage);}
+  		 var card = this.deckContainer[count];
+	
+	      console.log(count);
+		switch(count%4){
+
+
+				case 0 :
+						
+						if(card.position.y<=100){
+								return window.cancelAnimationFrame(AnimationFrameDeckDeal);
+								
+							break;
+						}
+						else{
+							card.y-=100;
+								return window.cancelAnimationFrame(AnimationFrameDeckDeal);
+								
+						
+							break;}
+						
+
+				case 1 :
+						if(card.position.y>=700){
+								return window.cancelAnimationFrame(AnimationFrameDeckDeal);
+								
+							break;
+						}else{
+						
+						card.y+=100;
+						break;
+						}
+
+				case 2 :
+						if(card.position.x>=800){
+								return window.cancelAnimationFrame(AnimationFrameDeckDeal);
+							
+							break;
+
+
+
+						}else{
+						card.x+=100;
+						break;			
+					}
+
+				case 3 :
+						
+						if(card.position.x<=100){
+								return window.cancelAnimationFrame(AnimationFrameDeckDeal);
+								
+							break;
+						}else{
+						card.x-=100;
+						break;
+					}
+	}
+	
+
+	
+    // directioion variable , 0 = north, 1 = east, 2, south, 3 north;
+    renderer.render(stage);
+    count = count+1;
+  
+	window.requestAnimationFrame(function(){ AnimateDeck(count);});
+
+				 
+	
+	}
+	
+		
+		 
+
+
+
+
 function CardsSetup(Hand){
-
-
-        //var cat1 = new PIXI.Sprite(loader.resources["cats"].texture);
-        // console.log(cat1);
-        // console.log(cat1.texture);
-        //console.log(loader.resources.cardsheet);
-       
-		var image = new PIXI.Sprite(loader.resources.cardsheet.texture);
-		console.log(image);
-		console.log(image.texture);
-	 	image.x=100;
-	 	image.y=100;
-	 	//cat1.x=40;
-	 //	cat1.y=50;
-	    console.log(stage);
-	    console.log(stage.renderable);
-	 	stage.addChild(image);
-	 	console.log(stage.children);
-	 	//console.log(stage.childern);
-	 	//stage.addChild(cat1);
-	 	renderer.render(stage);
+		
+     
+		
+		
 
 // each card is 70 x 90 pix
-
+console.log(Hand.length);
 var SpadeX =0;
 var SpadeY=0;
 var HeartX =70;
@@ -309,7 +403,9 @@ var DiaY=0;
 
 	 var locx;
 	 var locy;
-	 switch(Hand[0].rank){
+for(i =0; i <Hand.length;i++){
+	  console.log(Hand[i]);
+	 switch(Hand[i].rank){
 
 	 	case 1 :
 	 		locx=140;
@@ -325,7 +421,7 @@ var DiaY=0;
 	 		break;
 	 	}
 
-	 	switch(Hand[0].value){
+	 	switch(Hand[i].value){
 
 
 	 		case 12 :
@@ -382,10 +478,24 @@ var DiaY=0;
 	 	}
        
 
+       var Cardframe = new PIXI.Texture(CardSheet, new PIXI.Rectangle(locx,locy,70,90));
+       var newCardImage = new PIXI.Sprite(Cardframe);
+       
+       HandImageList.push(newCardImage);
+
+       for(x =0 ; x < HandImageList.length;x++){
+        HandImageList[x].x=x+x*HandImageList[x].width;
+        HandImageList[x].y=800;
+
+		stage.addChild(HandImageList[x]);
+
+		renderer.render(stage);
 
 
+}
 
 
+}
 
 }
 
