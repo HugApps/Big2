@@ -1,47 +1,17 @@
 
-            /*function Card (v , suit){
-                this.value=v;
-                this.rank;
-                
-                
-                switch (suit){
-                    
-                case 'd':
-			this.rank=1;
-			break;
-		case 'c':
-			this.rank=2;
-			break;
-		case 'h':
-			this.rank=3;
-			break;
-		case 's':
-			this.rank=4;
-			break;
-                    
-                    
-                    
-                    
-                }
-                
-               
-                
-                
-                
-            }*/
-            function Combo(cardslist){
+            var Combo =function(cardslist){
                
                 this.cards=cardslist;
-                
+                console.log(this.cards);
                 this.kicker; //distinguish winner when combos have same value;
                 this.value=0;
                 this.level=0;
       
                 if(this.cards.length ==2 ){
                     
-                    if(this.cards[cards.length-1].value == this.cards[0].value){
+                    if(this.cards[this.cards.length-1].value == this.cards[0].value){
                         console.log("is a pair");
-                        this.value=cards[0].value;
+                        this.value=this.cards[0].value;
                         console.log(this.value);
                     }
                     // Check for pair 
@@ -105,13 +75,13 @@
                 function checkStraight(Cards){
                     // Aces and 2's cant be the last card
                     
-                    if (Cards[Cards.length-1].value == 100 || Cards[Cards.length-1].value == 90){
+                    if (Cards[this.Cards.length-1].value == 100 || Cards[this.Cards.length-1].value == 90){
                         
                         console.log("Cant not include Ace 's and 2 's in straights");
                         return 0;
                     }
                         
-                    else if (Cards[0].value == 2 || Cards[0].value == 1){
+                    else if (this.Cards[0].value == 2 || this.Cards[0].value == 1){
                         console.log("Cant have Aces and 2's in staights");
                         return 0;
                         
@@ -119,7 +89,7 @@
                         
                     }else{
                         
-                        var lastval = Cards[0].value;
+                        var lastval = this.Cards[0].value;
                        
                         for(var i = 1; i < Cards.length; i++){
                            // console.log(Cards.length);
@@ -135,9 +105,9 @@
                         }
                      //   console.log(Cards[Cards.length-1].value);
                         console.log("its a straight");
-                        this.kicker=Cards[Cards.length-1].rank;
+                        this.kicker=this.Cards[this.Cards.length-1].rank;
                         console.log(this.kicker);
-                        return Cards[Cards.length-1].value;
+                        return this.Cards[this.Cards.length-1].value;
                         
                         
                         
@@ -151,16 +121,16 @@
                 
                 
                 function checkFlush(Cards){
-                    var suit = Cards[0].rank;
-                    for(var i = 0;i <Cards.length;i++){
-                        if(Cards[i].rank!=suit){
+                    var suit = this.Cards[0].rank;
+                    for(var i = 0;i <this.Cards.length;i++){
+                        if(this.Cards[i].rank!=suit){
                             return false;
                         }
                         
                         
                     }
                     console.log("its a flush");
-                    this.kicker=Cards[Cards.length-1].value;
+                    this.kicker=this.Cards[this.Cards.length-1].value;
                     return suit;
                     
                     
@@ -178,22 +148,22 @@
                 }
                 
                 function checkHouse(Cards){
-                    if(Cards[0].value==Cards[1].value){
+                    if(this.Cards[0].value==this.Cards[1].value){
                         
                         
                         
                         
                         
-                        if(Cards[2].value==Cards[0].value){
+                        if(this.Cards[2].value==this.Cards[0].value){
                             
                             // we know that this is a triple
                             // Search for pair 
                             
-                            if(Cards[3].value==Cards[4].value){
+                            if(this.Cards[3].value==this.Cards[4].value){
                                 // It is a house
                                 console.log("House found");
-                                console.log(Cards[0].value);
-                                return Cards[0].value;
+                                console.log(this.Cards[0].value);
+                                return this.Cards[0].value;
                                 
                                 
                             }else{return 0;}
@@ -204,10 +174,10 @@
                         }else{
                             // it is pair
                             // search for triple
-                            if(Cards[2].value==Cards[3].value && Cards[3].value==Cards[4].value){
+                            if(this.Cards[2].value==this.Cards[3].value && this.Cards[3].value==this.Cards[4].value){
                                  console.log("House found");
-                                 console.log(Cards[4].value);
-                                return Cards[4].value;
+                                 console.log(this.Cards[4].value);
+                                return this.Cards[4].value;
                             }else{return 0;}
                             
                             
@@ -229,14 +199,14 @@
                     // 2 cases the 4 copies at the begining of the list
                     // case 2 : 4 copies at the end of the list.
                     //case 1
-                    if(Cards[0].value==Cards[3].value){
+                    if(this.Cards[0].value==this.Cards[3].value){
                         
                         console.log("4 of a kind:");
-                        return Cards[0].value;
+                        return this.Cards[0].value;
                     // Case2
-                    }else if(Cards[4].value==Cards[1].value){
+                    }else if(this.Cards[4].value==this.Cards[1].value){
                         console.log("4 of a kind");
-                        return Cards[4].value;
+                        return this.Cards[4].value;
                     }
                     else{return 0;}
                     
@@ -282,19 +252,10 @@
                     
                     
                 }
-                
-                
-    }           
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+
+
+
+
              function compare(A,B){
                     if(A.value > B.value){
                           console.log(A.name);
@@ -323,43 +284,20 @@
                 }
                 
                 
-             
-            /*var cards = [];
-            cards.push(new Card(3,'c'));
-            cards.push(new Card(4,'c'));
-            cards.push(new Card(5,'c'));
-            cards.push(new Card(6,'c'));
-            cards.push(new Card(11,'c'));
+    };         
+        
+    module.exports=Combo;
+          
             
             
             
             
-            cards.sort(compare);
-            
-            console.log(cards);
-            var combo = new Combo(cards);
             
             
-            var cards2=[];
-            cards2.push(new Card(4,'h'));
-            cards2.push(new Card(8,'s'));
-            cards2.push(new Card(8,'d'));
-            cards2.push(new Card(8,'s'));
-            cards2.push(new Card(8,'h'));
-            
-            cards2.sort(compare);
-            console.log(cards2);
-            var c = new Combo(cards2);
-           
-            
-            
-            if(c.Compare(combo,c)){
-                console.log("combo wins");
+          
                 
-            }else{
-                console.log("c wins");
-            }
+                
+             
             
-          */ 
             
         

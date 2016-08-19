@@ -53,19 +53,30 @@ var CardSheet = PIXI.BaseTexture.fromImage("/images/playingCards2.png");
 var deckContainer = [];
 var AnimationFrameDeckDeal;
 var backcard;  	
-  
+var playercount=0;
+var currPlayerList=[];
+var cardtimeout;  
 
 
 // Display users that join the server
 function updateStatus(users){
-         
-		var count =1;
 
+		
+		console.log(users);
+
+		if(users.length ==4){
+
+			document.getElementById("status").innerHTML="Game Starting";
+			
+
+			full=true;
+			
+		}
+       
+		
         for(var i=0;i<users.length;i++){		
-        	if(users[i]!=null){
-        		//console.log(i);
-        		var pid ="p"+(i+1);
-        		document.getElementById(pid).innerHTML="Player "+ users[i].username +" has connected";
+        	var pid="p"+(i+1);
+      		document.getElementById(pid).innerHTML="Player "+ users[i].username +" has connected";
 
 
         	}
@@ -74,34 +85,20 @@ function updateStatus(users){
         
 		
 	//	document.getElementById("p2").innerHTML="Player "+users[1].username +" has connected";
-		if(users.length==1){
-
-			document.getElementById("status").innerHTML="Game Starting";
-			// Load playing Card sprite sheet + other sprites
 		
-			
-			
-
-
-			
-
-			
-			//PIXI.loader.load(setup);
-			// Add as needed
-
-			full=true;
-		}
-		}
+		
 
 
 
 
 // Poll for users joining the game
- // Intial user list
+
 
  socket.on('playerlist',function(users){
-		//console.log(users);
-		console.log(users);
+		
+		// populates list with all current players
+
+		console.log("All players");
 		updateStatus(users);
 	});
 
@@ -109,20 +106,12 @@ function updateStatus(users){
 	
 
 socket.on('updateList',function (users){
-	//console.log(users);
-	console.log("i got everything");
-	var identifier = document.cookie.split(';');
-	 username = identifier[0].split('=')[1];
-	 roomid = identifier[1].split('=')[1];
-     //console.log(roomid);
-     //console.log(username);
-     //console.log(users);
-	 if (roomid!=users[0].roomid){
-	 	return;
-	 	console.log('different room ');
-	 }
-	 else{updateStatus(users); console.log('same room');}
-
+	//adds a new player to the display
+	
+	
+     console.log("new player joining");
+	 currPlayerList.push(users[users.length-1]);
+	 updateStatus(users); 
 
 
 	
@@ -135,9 +124,9 @@ socket.on('updateList',function (users){
 
 
 socket.on('startgame',function(newgame){
-	console.log("Got here");
+	
 	//console.log(newgame);
-   // console.log(newgame.Hand);
+   console.log(newgame.Hand);
     PlayerHand=newgame.Hand;  
     //compare(PlayerHand[0],PlayerHand[1]);
    // console.log(PlayerHand);
@@ -261,7 +250,7 @@ AnimationFrameDeckDeal=window.requestAnimationFrame(function() {AnimateDeck(0);}
 
 
 
-console.log(deckContainer);
+
 //AnimationFrameDeckDeal=window.requestAnimationFrame(AnimateDeck(0));
 //window.requestAnimationFrame(AnimateDeck);
 
@@ -334,7 +323,7 @@ function AnimateDeck(cardCount){
 
   		 var card = this.deckContainer[count];
 	
-	    console.log(count%4);
+	   
 		switch(count%4){
 
 
@@ -404,10 +393,29 @@ function AnimateDeck(cardCount){
 		
 		 
 
+function onButtonDown (){
+	console.log("card clicked");
+	console.log(this);
+	this.width=this.width*2;
+	this.height=this.height*2;
+	requestAnimationFrame(animate);
+	//clearTimeout(cardtimeout);
 
 
 
+}
 
+function animate(){
+	requestAnimationFrame(animate);
+	renderer.render(stage);
+}
+
+function onButtonUp(){
+	console.log("card hover");
+
+	//clearTimeout(cardtimeout);
+
+}
 
 
 
@@ -435,7 +443,7 @@ var DiaY=0;
 	 var locx;
 	 var locy;
 for(i =0; i <Hand.length;i++){
-	  console.log(Hand[i]);
+	 
 	 switch(Hand[i].rank){
 
 	 	case 1 :
@@ -511,7 +519,27 @@ for(i =0; i <Hand.length;i++){
 
        var Cardframe = new PIXI.Texture(CardSheet, new PIXI.Rectangle(locx,locy,70,90));
        var newCardImage = new PIXI.Sprite(Cardframe);
-       
+      
+       // Make Card Sprite interactive 
+       newCardImage.interactive=true;
+       newCardImage.Card=Hand[i];
+
+
+       newCardImage.mouseover = function(mouseData){
+
+       		
+       		console.log("moused over");
+
+
+       }
+       newCardImage
+       .on('mousedown',onButtonDown) // Mouse click on card
+       // Finger touches card
+
+
+
+
+
        HandImageList.push(newCardImage);
 
        for(x =0 ; x < HandImageList.length;x++){
